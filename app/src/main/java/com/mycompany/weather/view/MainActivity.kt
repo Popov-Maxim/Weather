@@ -7,9 +7,9 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
 import com.mycompany.weather.R
 import com.mycompany.weather.databinding.ActivityMainBinding
 import com.mycompany.weather.model.City
@@ -17,9 +17,8 @@ import com.mycompany.weather.vm.MyViewModel
 
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MyViewModel by lazy {
-        ViewModelProviders.of(this).get(MyViewModel::class.java)
-    }
+    private val viewModel: MyViewModel by viewModels()
+
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
     }
