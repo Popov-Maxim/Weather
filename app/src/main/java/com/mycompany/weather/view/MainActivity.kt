@@ -10,10 +10,14 @@ import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.room.Room
 import com.mycompany.weather.R
 import com.mycompany.weather.databinding.ActivityMainBinding
 import com.mycompany.weather.model.City
+import com.mycompany.weather.room.AppDatabase
+import com.mycompany.weather.room.CityDao
 import com.mycompany.weather.vm.MyViewModel
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +29,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        loadCitiesInTable()
         saveCities()
 
         binding.lifecycleOwner = this
@@ -71,6 +77,31 @@ class MainActivity : AppCompatActivity() {
                     sPref.getFloat(City::lon.name + i, 0F).toDouble()
                 )
             }!!
+        }
+
+    }
+
+
+    private fun loadCitiesInTable() {
+        val sPref = getPreferences(MODE_PRIVATE)
+        val size = sPref.getInt("_size", 0)
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "weather.db"
+        ).build()
+        thread {
+            db.cityDao().insert(
+                *Array(size) { i ->
+                    sPref.getString(City::name.name + i, "name")?.let {
+                        City(
+                            it,
+                            sPref.getFloat(City::lat.name + i, 0F).toDouble(),
+                            sPref.getFloat(City::lon.name + i, 0F).toDouble()
+                        )
+                    }!!
+                }
+            )
         }
 
     }
