@@ -3,9 +3,9 @@ package com.mycompany.weather.model
 import com.mycompany.weather.model.City
 
 interface CityRepository {
-    fun getArrayCities(): Array<City>
+    val city: City?
+    val cities: List<City>
     fun changeCity(name: String)
-    fun getSelectedCity(): City?
     fun findACityByGeo()
 }
 

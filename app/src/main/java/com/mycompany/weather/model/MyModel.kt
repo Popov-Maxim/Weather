@@ -6,18 +6,16 @@ import java.io.IOException
 
 
 class MyModel(citiesArray: Array<City>) : MyRepository {
-    private var city: City? = null
+    override var city: City? = null
+        private set
 
-    private var cities: List<City> = citiesArray.toList()
+    override var cities: List<City> = citiesArray.toList()
+        private set
 
     override fun changeCity(name: String) {
         city = cities.find { city -> city.name == name }
     }
 
-
-    override fun getArrayCities(): Array<City> {
-        return cities.toTypedArray()
-    }
 
     private fun requestGet(city: City?) {
         val client = OkHttpClient()
@@ -55,9 +53,6 @@ class MyModel(citiesArray: Array<City>) : MyRepository {
 
     }
 
-    override fun getSelectedCity(): City? {
-        return city
-    }
 
     override fun findACityByGeo() {
     }

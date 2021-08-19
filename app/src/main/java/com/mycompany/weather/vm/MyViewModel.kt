@@ -3,9 +3,8 @@ package com.mycompany.weather.vm
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mycompany.weather.model.MyRepository
 import com.mycompany.weather.model.City
-import com.mycompany.weather.model.MyModel
+import com.mycompany.weather.model.MyRepository
 
 class MyViewModel(private val _model: MutableLiveData<MyRepository?>) : ViewModel() {
     val model: LiveData<MyRepository?> = _model
@@ -14,8 +13,8 @@ class MyViewModel(private val _model: MutableLiveData<MyRepository?>) : ViewMode
         _model.value?.changeCity(name)
     }
 
-    fun getArrayCities(): Array<City>? {
-        return _model.value?.getArrayCities()
+    fun getArrayCities(): Array<City> {
+        return _model.value?.cities?.toTypedArray() ?: arrayOf()
     }
 
     fun requestGet() {
