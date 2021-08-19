@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mycompany.weather.model.City
 import com.mycompany.weather.model.MyModel
-import com.mycompany.weather.model.Repository
+import com.mycompany.weather.model.MyRepository
 
 class MyViewModelFactory(private val array: Array<City>) : ViewModelProvider.Factory {
     constructor() : this(arrayOf()) {
@@ -14,6 +14,6 @@ class MyViewModelFactory(private val array: Array<City>) : ViewModelProvider.Fac
     }
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MyViewModel(MutableLiveData<Repository?>(MyModel(array))) as T
+        return MyViewModel(MutableLiveData<MyRepository?>(MyModel(array))) as T
     }
 }

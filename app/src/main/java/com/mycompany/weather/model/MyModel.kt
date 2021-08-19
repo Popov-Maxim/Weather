@@ -1,12 +1,11 @@
 package com.mycompany.weather.model
 
-import com.mycompany.weather.model.Repository
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 
 
-class MyModel(citiesArray: Array<City>) : Repository {
+class MyModel(citiesArray: Array<City>) : MyRepository {
     private var city: City? = null
 
     private var cities: List<City> = citiesArray.toList()

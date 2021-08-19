@@ -3,12 +3,12 @@ package com.mycompany.weather.vm
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mycompany.weather.model.Repository
+import com.mycompany.weather.model.MyRepository
 import com.mycompany.weather.model.City
 import com.mycompany.weather.model.MyModel
 
-class MyViewModel(private val _model: MutableLiveData<Repository?>) : ViewModel() {
-    val model: LiveData<Repository?> = _model
+class MyViewModel(private val _model: MutableLiveData<MyRepository?>) : ViewModel() {
+    val model: LiveData<MyRepository?> = _model
 
     fun changeCity(name: String) {
         _model.value?.changeCity(name)
