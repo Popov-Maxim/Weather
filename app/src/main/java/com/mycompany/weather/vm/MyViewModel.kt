@@ -20,4 +20,8 @@ class MyViewModel(private val _model: MutableLiveData<MyRepository?>) : ViewMode
     fun requestGet() {
         _model.value = _model.value?.also { it.requestGet() }
     }
+
+    fun loadCityFromDatabase(){
+        _model.value?.loadCityFromDatabase()
+    }
 }

@@ -1,11 +1,13 @@
 package com.mycompany.weather.model
 
+import androidx.annotation.WorkerThread
+import com.mycompany.weather.room.AppDatabase
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
 
 
-class MyModel(citiesArray: Array<City>) : MyRepository {
+class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyRepository {
     override var city: City? = null
         private set
 
@@ -50,13 +52,15 @@ class MyModel(citiesArray: Array<City>) : MyRepository {
 
     override fun requestGet() {
         requestGet(city)
-
     }
 
+    @WorkerThread
+    override fun loadCityFromDatabase() {
+        cities = db.cityDao().getAll()
+    }
 
     override fun findACityByGeo() {
     }
-
 }
 
 private const val URI = "https://api.weather.yandex.ru/v2/forecast"

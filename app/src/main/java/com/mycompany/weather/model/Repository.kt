@@ -1,6 +1,6 @@
 package com.mycompany.weather.model
 
-import com.mycompany.weather.model.City
+import androidx.annotation.WorkerThread
 
 interface CityRepository {
     val city: City?
@@ -14,7 +14,8 @@ interface RequestRepository {
 }
 
 interface DataBaseRepository {
-
+    @WorkerThread
+    fun loadCityFromDatabase()
 }
 
 interface MyRepository : CityRepository, RequestRepository, DataBaseRepository

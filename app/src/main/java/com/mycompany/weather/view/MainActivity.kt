@@ -10,19 +10,24 @@ import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.mycompany.weather.R
 import com.mycompany.weather.databinding.ActivityMainBinding
 import com.mycompany.weather.model.City
 import com.mycompany.weather.room.AppDatabase
-import com.mycompany.weather.room.CityDao
 import com.mycompany.weather.vm.MyViewModel
 import com.mycompany.weather.vm.MyViewModelFactory
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MyViewModel by viewModels { MyViewModelFactory() }
+    private val viewModel: MyViewModel by viewModels {
+        MyViewModelFactory(
+            applicationContext
+        )
+    }
 
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -47,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         val strings: Array<String>
 
         strings = viewModel.getArrayCities().let {
-            Array(it?.size ?: 0) { i -> it!![i].name }
+            Array(it.size) { i -> it[i].name }
         }
         val arrayAdapter = ArrayAdapter(this, R.layout.spinner_item, strings)
         arrayAdapter.setDropDownViewResource(R.layout.spinner_drop)
@@ -66,6 +71,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun updateSpinner(view: View) {
+        val _vm: MutableLiveData<MyViewModel?> = MutableLiveData(viewModel)
+        val vm: LiveData<MyViewModel?> = _vm
+        vm.observe(this) {
+            initSpinner()
+        }
+        thread {
+            _vm.value?.loadCityFromDatabase()
+            runOnUiThread {
+                _vm.value = _vm.value
+            }
+        }
+    }
+
 
     private fun loadCities(): Array<City> {
         val sPref = getPreferences(MODE_PRIVATE)
@@ -81,7 +100,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
 
     private fun loadCitiesInTable() {
         val sPref = getPreferences(MODE_PRIVATE)
