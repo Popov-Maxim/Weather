@@ -17,11 +17,12 @@ import com.mycompany.weather.model.City
 import com.mycompany.weather.room.AppDatabase
 import com.mycompany.weather.room.CityDao
 import com.mycompany.weather.vm.MyViewModel
+import com.mycompany.weather.vm.MyViewModelFactory
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MyViewModel by viewModels()
+    private val viewModel: MyViewModel by viewModels { MyViewModelFactory(loadCities()) }
 
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -30,12 +31,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadCitiesInTable()
-        saveCities()
+//        loadCitiesInTable()
+//        saveCities()
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        viewModel.setModel(loadCities())
+//        viewModel.setModel(loadCities())
 
 
         initSpinner()

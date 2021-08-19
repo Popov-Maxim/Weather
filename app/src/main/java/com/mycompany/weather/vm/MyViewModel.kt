@@ -7,8 +7,8 @@ import com.mycompany.weather.model.Repository
 import com.mycompany.weather.model.City
 import com.mycompany.weather.model.MyModel
 
-class MyViewModel : ViewModel() {
-    private val _model = MutableLiveData<Repository?>(null)
+class MyViewModel(private val _model: MutableLiveData<Repository?>) : ViewModel() {
+//    private val _model = MutableLiveData<Repository?>(null)
     val model: LiveData<Repository?> = _model
 
     fun setModel(array: Array<City>) {

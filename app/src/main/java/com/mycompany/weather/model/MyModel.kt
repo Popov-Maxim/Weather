@@ -45,7 +45,10 @@ class MyModel(citiesArray: Array<City>) : Repository {
         })
         Thread.sleep(1000)
 
-        city?.degree = JSONObject(string).getJSONObject("fact").getInt("temp")
+        try {
+            city?.degree = JSONObject(string).getJSONObject("fact").getInt("temp")
+        } catch (e: Exception) {
+        }
     }
 
     override fun requestGet() {
