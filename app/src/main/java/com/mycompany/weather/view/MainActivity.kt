@@ -22,7 +22,7 @@ import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MyViewModel by viewModels { MyViewModelFactory(loadCities()) }
+    private val viewModel: MyViewModel by viewModels { MyViewModelFactory() }
 
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSpinner() {
         val spinner = findViewById<Spinner>(R.id.spinner)
-        var strings: Array<String>
+        val strings: Array<String>
 
         strings = viewModel.getArrayCities().let {
             Array(it?.size ?: 0) { i -> it!![i].name }
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
     private fun saveCities() {
         val sPref = getPreferences(MODE_PRIVATE)
         val ed: SharedPreferences.Editor = sPref.edit()
-        ed.putInt("_size", 3);
+        ed.putInt("_size", 3)
 
         ed.putString(City::name.name + 0, "Минск")
         ed.putFloat(City::lat.name + 0, 53.902287F)
