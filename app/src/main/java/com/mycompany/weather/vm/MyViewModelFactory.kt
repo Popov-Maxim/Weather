@@ -1,6 +1,5 @@
 package com.mycompany.weather.vm
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

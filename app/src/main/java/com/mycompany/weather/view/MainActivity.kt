@@ -41,8 +41,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-//        viewModel.setModel(loadCities())
-
 
         initSpinner()
     }
@@ -71,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     fun updateSpinner(view: View) {
         val _vm: MutableLiveData<MyViewModel?> = MutableLiveData(viewModel)
         val vm: LiveData<MyViewModel?> = _vm
@@ -85,6 +84,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun requestGet(view: View){
+        val _vm: MutableLiveData<MyViewModel?> = MutableLiveData(viewModel)
+        val vm: LiveData<MyViewModel?> = _vm
+        vm.observe(this) {
+            binding.viewModel = viewModel
+        }
+        thread {
+            _vm.value?.requestGet()
+            runOnUiThread {
+                _vm.value = _vm.value
+            }
+        }
+    }
 
     private fun loadCities(): Array<City> {
         val sPref = getPreferences(MODE_PRIVATE)

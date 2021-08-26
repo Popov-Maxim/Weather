@@ -2,6 +2,8 @@ package com.mycompany.weather.model
 
 import androidx.annotation.WorkerThread
 import com.mycompany.weather.room.AppDatabase
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
@@ -19,7 +21,7 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
     }
 
 
-    private fun requestGet(city: City?) {
+    private suspend fun requestGet(city: City?) {
         val client = OkHttpClient()
 
         val request = Request.Builder().url(
@@ -30,6 +32,7 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
         ).header(HEADER_NAME, KEY).build()
 
         var string = "lol"
+        val mtx = Mutex(true)
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
@@ -39,10 +42,11 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
                 response.use {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
                     string = response.body!!.string()
+                    mtx.unlock()
                 }
             }
         })
-        Thread.sleep(1000)
+        mtx.lock()
 
         try {
             city?.degree = JSONObject(string).getJSONObject("fact").getInt("temp")
@@ -51,7 +55,9 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
     }
 
     override fun requestGet() {
-        requestGet(city)
+        runBlocking {
+            requestGet(city)
+        }
     }
 
     @WorkerThread
@@ -63,7 +69,7 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
     }
 }
 
-private const val URI = "https://api.weather.yandex.ru/v2/forecast"
+private const val URI = "https://api.weather.yandex.ru/v2/informers"
 private const val HEADER_NAME = "X-Yandex-API-Key"
 private const val KEY = "2aaf6307-4662-40d1-a590-edc3524b5d1e"
 
