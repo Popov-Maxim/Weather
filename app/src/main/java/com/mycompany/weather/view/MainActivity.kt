@@ -2,6 +2,8 @@ package com.mycompany.weather.view
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -71,31 +73,16 @@ class MainActivity : AppCompatActivity() {
 
 
     fun updateSpinner(view: View) {
-        val _vm: MutableLiveData<MyViewModel?> = MutableLiveData(viewModel)
-        val vm: LiveData<MyViewModel?> = _vm
-        vm.observe(this) {
-            initSpinner()
-        }
         thread {
-            _vm.value?.loadCityFromDatabase()
-            runOnUiThread {
-                _vm.value = _vm.value
+            viewModel.loadCityFromDatabase()
+            runOnUiThread{
+                initSpinner()
             }
         }
     }
 
     fun requestGet(view: View){
-        val _vm: MutableLiveData<MyViewModel?> = MutableLiveData(viewModel)
-        val vm: LiveData<MyViewModel?> = _vm
-        vm.observe(this) {
-            binding.viewModel = viewModel
-        }
-        thread {
-            _vm.value?.requestGet()
-            runOnUiThread {
-                _vm.value = _vm.value
-            }
-        }
+        viewModel.requestGet()
     }
 
     private fun loadCities(): Array<City> {

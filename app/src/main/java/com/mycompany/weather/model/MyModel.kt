@@ -54,10 +54,8 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
         }
     }
 
-    override fun requestGet() {
-        runBlocking {
-            requestGet(city)
-        }
+    override fun requestGet() = runBlocking {
+        requestGet(city)
     }
 
     @WorkerThread
