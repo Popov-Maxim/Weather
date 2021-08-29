@@ -21,13 +21,13 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
     }
 
 
-    private suspend fun requestGet(city: City?) {
+    private suspend fun requestGet(city: City) {
         val client = OkHttpClient()
 
         val request = Request.Builder().url(
             BuilderURL().setURL(URI)
-                .addParam(City::lat.name, city?.lat.toString())
-                .addParam(City::lon.name, city?.lon.toString())
+                .addParam(City::lat.name, city.lat.toString())
+                .addParam(City::lon.name, city.lon.toString())
                 .build()
         ).header(HEADER_NAME, KEY).build()
 
@@ -47,15 +47,18 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
             }
         })
         mtx.lock()
-
         try {
-            city?.degree = JSONObject(string).getJSONObject("fact").getInt("temp")
+            city.degree = JSONObject(string).getJSONObject("fact").getInt("temp")
         } catch (e: Exception) {
         }
     }
 
     override fun requestGet() = runBlocking {
-        requestGet(city)
+        try {
+            requestGet(city!!)
+        } catch (e:NullPointerException){
+            city = City("ERROR", 0.0, 0.0)
+        }
     }
 
     @WorkerThread

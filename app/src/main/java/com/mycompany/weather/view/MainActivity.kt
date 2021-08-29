@@ -2,8 +2,6 @@ package com.mycompany.weather.view
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -12,8 +10,6 @@ import android.widget.Spinner
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import com.mycompany.weather.R
 import com.mycompany.weather.databinding.ActivityMainBinding
@@ -49,11 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSpinner() {
         val spinner = findViewById<Spinner>(R.id.spinner)
-        val strings: Array<String>
-
-        strings = viewModel.getArrayCities().let {
-            Array(it.size) { i -> it[i].name }
-        }
+        val strings = viewModel.getArrayCities().map { it.name }
         val arrayAdapter = ArrayAdapter(this, R.layout.spinner_item, strings)
         arrayAdapter.setDropDownViewResource(R.layout.spinner_drop)
         spinner.adapter = arrayAdapter
@@ -75,13 +67,13 @@ class MainActivity : AppCompatActivity() {
     fun updateSpinner(view: View) {
         thread {
             viewModel.loadCityFromDatabase()
-            runOnUiThread{
+            runOnUiThread {
                 initSpinner()
             }
         }
     }
 
-    fun requestGet(view: View){
+    fun requestGet(view: View) {
         viewModel.requestGet()
     }
 
