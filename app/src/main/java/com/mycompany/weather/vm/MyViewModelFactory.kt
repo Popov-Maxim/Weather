@@ -9,7 +9,6 @@ import com.mycompany.weather.model.City
 import com.mycompany.weather.model.MyModel
 import com.mycompany.weather.model.MyRepository
 import com.mycompany.weather.room.AppDatabase
-import com.mycompany.weather.room.MY_MIGRATION
 import com.mycompany.weather.room.NAME_DATABASE
 
 class MyViewModelFactory(private val array: Array<City>, private val applicationContext: Context) :
@@ -28,7 +27,7 @@ class MyViewModelFactory(private val array: Array<City>, private val application
                         applicationContext,
                         AppDatabase::class.java,
                         NAME_DATABASE
-                    ).addMigrations(MY_MIGRATION).build()
+                    ).build()
                 )
             )
         ) as T

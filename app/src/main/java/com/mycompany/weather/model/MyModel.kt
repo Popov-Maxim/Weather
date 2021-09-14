@@ -56,7 +56,7 @@ class MyModel(citiesArray: Array<City>, private val db: AppDatabase) : MyReposit
     override fun requestGet() = runBlocking {
         try {
             requestGet(city!!)
-        } catch (e:NullPointerException){
+        } catch (e: NullPointerException) {
             city = City("ERROR", 0.0, 0.0)
         }
     }

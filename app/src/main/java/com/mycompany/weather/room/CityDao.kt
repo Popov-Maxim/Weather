@@ -15,5 +15,5 @@ interface CityDao {
     fun delete(city: City)
 
     @Query("SELECT * From City")
-    fun getAll():List<City>
+    fun getAll(): List<City>
 }
