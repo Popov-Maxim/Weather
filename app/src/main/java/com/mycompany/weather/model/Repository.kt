@@ -1,11 +1,21 @@
 package com.mycompany.weather.model
 
-import com.mycompany.weather.model.City
+import androidx.annotation.WorkerThread
 
-interface Repository {
-    fun getArrayCities():Array<City>
-    fun changeCity(name:String)
-    fun requestGet()
-    fun getSelectedCity(): City?
+interface CityRepository {
+    val city: City?
+    val cities: List<City>
+    fun changeCity(name: String)
     fun findACityByGeo()
 }
+
+interface RequestRepository {
+    fun requestGet()
+}
+
+interface DataBaseRepository {
+    @WorkerThread
+    fun loadCityFromDatabase()
+}
+
+interface MyRepository : CityRepository, RequestRepository, DataBaseRepository

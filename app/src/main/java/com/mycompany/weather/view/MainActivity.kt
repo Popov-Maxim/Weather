@@ -15,13 +15,17 @@ import com.mycompany.weather.R
 import com.mycompany.weather.databinding.ActivityMainBinding
 import com.mycompany.weather.model.City
 import com.mycompany.weather.room.AppDatabase
-import com.mycompany.weather.room.CityDao
 import com.mycompany.weather.vm.MyViewModel
+import com.mycompany.weather.vm.MyViewModelFactory
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MyViewModel by viewModels()
+    private val viewModel: MyViewModel by viewModels {
+        MyViewModelFactory(
+            applicationContext
+        )
+    }
 
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -30,24 +34,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadCitiesInTable()
-        saveCities()
+//        loadCitiesInTable()
+//        saveCities()
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        viewModel.setModel(loadCities())
-
 
         initSpinner()
     }
 
     private fun initSpinner() {
         val spinner = findViewById<Spinner>(R.id.spinner)
-        var strings: Array<String>
-
-        strings = viewModel.getArrayCities().let {
-            Array(it?.size ?: 0) { i -> it!![i].name }
-        }
+        val strings = viewModel.getArrayCities().map { it.name }
         val arrayAdapter = ArrayAdapter(this, R.layout.spinner_item, strings)
         arrayAdapter.setDropDownViewResource(R.layout.spinner_drop)
         spinner.adapter = arrayAdapter
@@ -66,6 +64,19 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun updateSpinner(view: View) {
+        thread {
+            viewModel.loadCityFromDatabase()
+            runOnUiThread {
+                initSpinner()
+            }
+        }
+    }
+
+    fun requestGet(view: View) {
+        viewModel.requestGet()
+    }
+
     private fun loadCities(): Array<City> {
         val sPref = getPreferences(MODE_PRIVATE)
         val size = sPref.getInt("_size", 0)
@@ -80,7 +91,6 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-
 
     private fun loadCitiesInTable() {
         val sPref = getPreferences(MODE_PRIVATE)
@@ -109,7 +119,7 @@ class MainActivity : AppCompatActivity() {
     private fun saveCities() {
         val sPref = getPreferences(MODE_PRIVATE)
         val ed: SharedPreferences.Editor = sPref.edit()
-        ed.putInt("_size", 3);
+        ed.putInt("_size", 3)
 
         ed.putString(City::name.name + 0, "Минск")
         ed.putFloat(City::lat.name + 0, 53.902287F)
